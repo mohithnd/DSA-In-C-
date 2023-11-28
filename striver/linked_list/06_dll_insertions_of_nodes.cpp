@@ -83,37 +83,56 @@ Node *insert_at_end(Node *head, int data)
 
 Node *insert_at_position(Node *head, int data, int k)
 {
-    Node *nodeToInsert = new Node(data);
-    if (head == nullptr)
-    {
-        return nodeToInsert;
-    }
+    Node *newNode = new Node(data);
     if (k == 1)
     {
-        head->prev = nodeToInsert;
-        nodeToInsert->next = head;
-        return nodeToInsert;
+        newNode->next = head;
+        head->prev = newNode;
+        return newNode;
     }
+    Node *curr = head;
     int cnt = 1;
-    Node *temp = head;
-    Node *prevPointer = nullptr;
-    while (head)
+    while (curr->next)
     {
         if (cnt == k)
         {
-            nodeToInsert->next = head;
-            nodeToInsert->prev = head->prev;
-            head->prev = nodeToInsert;
-            nodeToInsert->prev->next = nodeToInsert->next;
-            return temp;
+            newNode->next = curr;
+            newNode->prev = curr->prev;
+            curr->prev->next = newNode;
+            curr->prev = newNode;
+            return head;
         }
-        prevPointer = head;
-        head = head->next;
+        curr = curr->next;
         cnt++;
     }
-    nodeToInsert->prev = prevPointer;
-    prevPointer->next = nodeToInsert;
-    return temp;
+    curr->next = newNode;
+    newNode->prev = curr;
+    return head;
+}
+
+Node *insert_before_value(Node *head, int data, int value)
+{
+    Node *newNode = new Node(data);
+    if (head->data == value)
+    {
+        newNode->next = head;
+        head->prev = newNode;
+        return newNode;
+    }
+    Node *curr = head;
+    while (curr)
+    {
+        if (curr->data == value)
+        {
+            newNode->next = curr;
+            newNode->prev = curr->prev;
+            curr->prev->next = newNode;
+            curr->prev = newNode;
+            return head;
+        }
+        curr = curr->next;
+    }
+    return head;
 }
 
 int main()
@@ -126,7 +145,9 @@ int main()
     traverse(head);
     head = insert_at_end(head, 10);
     traverse(head);
-    head = insert_at_position(head, 100, 3);
+    head = insert_at_position(head, 100, 4);
+    traverse(head);
+    head = insert_before_value(head, 250, 10);
     traverse(head);
     return 0;
 }

@@ -47,6 +47,8 @@ Node *convertArrToLL(int arr[], int n)
 
 Node *sum_of_ll_numbers(Node *num1, Node *num2)
 {
+    // TC - O(max(n,m))
+    // SC - O(max(n,m))
     int c = 0;
     Node *ans = new Node(-1);
     Node *head = ans;

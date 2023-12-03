@@ -24,7 +24,7 @@ vector<int> subsetSum(vector<int> arr)
 
 int main()
 {
-    vector<int> arr = {1, 2, 3};
+    vector<int> arr = {1, 2, 3, 4};
     for (int i : subsetSum(arr))
     {
         cout << i << " ";

@@ -3,43 +3,30 @@
 #include <vector>
 using namespace std;
 
-void solve(vector<int> arr, int i, int target, int sum, vector<int> v, vector<vector<int>> &res)
+void solve(vector<int> arr, int i, int target, vector<int> v, vector<vector<int>> &res)
 {
-    if (sum > target)
+    if (target == 0)
+    {
+        res.push_back(v);
+        return;
+    }
+    if (i >= arr.size())
     {
         return;
     }
-    if (sum == target)
+    if (arr[i] <= target)
     {
-        bool flag = false;
-        for (auto i : res)
-        {
-            if (i == v)
-            {
-                flag = true;
-                break;
-            }
-        }
-        if (!flag)
-        {
-            res.push_back(v);
-        }
-        return;
+        v.push_back(arr[i]);
+        solve(arr, i, target - arr[i], v, res);
+        v.pop_back();
     }
-    if (i == arr.size())
-    {
-        return;
-    }
-    v.push_back(arr[i]);
-    solve(arr, i, target, sum + arr[i], v, res);
-    v.pop_back();
-    solve(arr, i + 1, target, sum, v, res);
+    solve(arr, i + 1, target, v, res);
 }
 
 vector<vector<int>> combinationSum(vector<int> arr, int target)
 {
     vector<vector<int>> res;
-    solve(arr, 0, target, 0, vector<int>(), res);
+    solve(arr, 0, target, vector<int>(), res);
     for (int i = 0; i < res.size(); i++)
     {
         sort(res[i].begin(), res[i].end());

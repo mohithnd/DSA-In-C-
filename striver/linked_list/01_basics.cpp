@@ -71,7 +71,7 @@ bool search(Node *head, int val)
 
 int main()
 {
-    int arr[] = {2, 1, 3, 8};
+    int arr[] = {2, 10, 3, 8};
     int n = sizeof(arr) / sizeof(int);
     Node *ll = convertArrToLL(arr, n);
     traverse(ll);

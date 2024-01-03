@@ -14,15 +14,15 @@ public:
     }
 };
 
-void post_order(Node *root)
+void preorder(Node *root)
 {
-    if (root == nullptr)
+    if (!root)
     {
         return;
     }
-    post_order(root->left);
-    post_order(root->right);
     cout << root->data << " ";
+    preorder(root->left);
+    preorder(root->right);
 }
 
 int main()
@@ -34,7 +34,8 @@ int main()
     root->left->right = new Node(5);
     root->right->left = new Node(6);
     root->right->right = new Node(7);
-    post_order(root);
+    cout << "Preorder: ";
+    preorder(root);
     cout << endl;
     return 0;
 }

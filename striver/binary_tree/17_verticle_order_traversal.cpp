@@ -307,6 +307,59 @@ void vericle_order_1(Node *root)
     }
 }
 
+void solve_vericle_order_2(Node *root, map<int, map<int, multiset<int>>> &mp)
+{
+    if (root == nullptr)
+    {
+        return;
+    }
+    queue<pair<Node *, pair<int, int>>> q;
+    q.push({root, {0, 0}});
+    while (!q.empty())
+    {
+        pair<Node *, pair<int, int>> curr = q.front();
+        q.pop();
+        int x = curr.second.first;
+        int y = curr.second.second;
+        mp[x][y].insert(curr.first->data);
+        if (curr.first->left)
+        {
+            q.push({curr.first->left, {x - 1, y + 1}});
+        }
+        if (curr.first->right)
+        {
+            q.push({curr.first->right, {x + 1, y + 1}});
+        }
+    }
+}
+
+void vericle_order_2(Node *root)
+{
+    vector<vector<int>> res;
+    map<int, map<int, multiset<int>>> mp;
+    solve_vericle_order_2(root, mp);
+    for (auto i : mp)
+    {
+        vector<int> temp;
+        for (auto j : i.second)
+        {
+            for (auto k : j.second)
+            {
+                temp.push_back(k);
+            }
+        }
+        res.push_back(temp);
+    }
+    for (auto i : res)
+    {
+        for (auto j : i)
+        {
+            cout << j << " ";
+        }
+        cout << endl;
+    }
+}
+
 int main()
 {
     Node *root = new Node(1);
@@ -320,5 +373,7 @@ int main()
     root->left->left->right->right = new Node(6);
 
     vericle_order_1(root);
+    cout << endl;
+    vericle_order_2(root);
     return 0;
 }

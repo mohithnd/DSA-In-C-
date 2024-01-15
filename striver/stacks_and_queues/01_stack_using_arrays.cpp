@@ -61,6 +61,14 @@ public:
     {
         return this->top + 1;
     }
+    void print_stack()
+    {
+        for (int i = 0; i <= this->top; i++)
+        {
+            cout << this->arr[i] << " ";
+        }
+        cout << endl;
+    }
     ~Stack()
     {
         delete[] this->arr;
@@ -70,6 +78,14 @@ public:
 int main()
 {
     Stack st;
+    st.push(1);
+    st.push(2);
+    st.push(3);
+    st.push(4);
+    st.push(5);
+    st.pop();
+    st.pop();
+    st.print_stack();
     cout << st.size() << endl;
     return 0;
 }

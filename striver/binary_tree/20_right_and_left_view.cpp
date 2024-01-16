@@ -1,6 +1,9 @@
 #include <iostream>
+#include <map>
 #include <queue>
 #include <stack>
+#include <algorithm>
+#include <set>
 using namespace std;
 
 class Node
@@ -266,17 +269,68 @@ void preorder_inorder_postorder(Node *root)
     cout << endl;
 }
 
-void max_path_sum(Node *root)
+void solve_right_view(Node *root, vector<int> &res, int level)
 {
+    if (root == nullptr)
+    {
+        return;
+    }
+    if (res.size() == level)
+    {
+        res.push_back(root->data);
+    }
+    solve_right_view(root->right, res, level + 1);
+    solve_right_view(root->left, res, level + 1);
+}
+
+void right_view(Node *root)
+{
+    vector<int> res;
+    solve_right_view(root, res, 0);
+    for (auto i : res)
+    {
+        cout << i << " ";
+    }
+}
+
+void solve_left_view(Node *root, vector<int> &res, int level)
+{
+    if (root == nullptr)
+    {
+        return;
+    }
+    if (res.size() == level)
+    {
+        res.push_back(root->data);
+    }
+    solve_left_view(root->left, res, level + 1);
+    solve_left_view(root->right, res, level + 1);
+}
+
+void left_view(Node *root)
+{
+    vector<int> res;
+    solve_left_view(root, res, 0);
+    for (auto i : res)
+    {
+        cout << i << " ";
+    }
 }
 
 int main()
 {
-    Node *root = new Node(-10);
-    root->left = new Node(9);
-    root->right = new Node(20);
-    root->right->left = new Node(15);
+    Node *root = new Node(1);
+    root->left = new Node(2);
+    root->right = new Node(3);
+    root->left->left = new Node(4);
+    root->left->right = new Node(5);
+    root->left->right->left = new Node(6);
     root->right->right = new Node(7);
-    max_path_sum(root);
+    cout << "Right View: ";
+    right_view(root);
+    cout << endl;
+    cout << "Left View: ";
+    left_view(root);
+    cout << endl;
     return 0;
 }

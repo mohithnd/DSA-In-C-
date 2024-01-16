@@ -39,11 +39,11 @@ vector<int> next_greater_element_2(vector<int> arr)
     stack<int> st;
     for (int i = arr.size() - 1; i >= 0; i--)
     {
-        while (st.empty() == false && st.top() <= arr[i])
+        while (!st.empty() && st.top() <= arr[i])
         {
             st.pop();
         }
-        if (st.empty() == false)
+        if (!st.empty())
         {
             ans[i] = st.top();
         }

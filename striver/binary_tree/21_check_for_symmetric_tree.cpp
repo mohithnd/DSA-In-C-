@@ -1,6 +1,9 @@
 #include <iostream>
+#include <map>
 #include <queue>
 #include <stack>
+#include <algorithm>
+#include <set>
 using namespace std;
 
 class Node
@@ -266,17 +269,40 @@ void preorder_inorder_postorder(Node *root)
     cout << endl;
 }
 
-void max_path_sum(Node *root)
+bool is_symmetric(Node *root1, Node *root2)
 {
+    if (root1 == nullptr && root2 == nullptr)
+    {
+        return true;
+    }
+    if (root1 == nullptr || root2 == nullptr)
+    {
+        return false;
+    }
+    if (root1->data != root2->data)
+    {
+        return false;
+    }
+    if (is_symmetric(root1->left, root2->right) == false)
+    {
+        return false;
+    }
+    if (is_symmetric(root1->right, root2->left) == false)
+    {
+        return false;
+    }
+    return true;
 }
 
 int main()
 {
-    Node *root = new Node(-10);
-    root->left = new Node(9);
-    root->right = new Node(20);
-    root->right->left = new Node(15);
-    root->right->right = new Node(7);
-    max_path_sum(root);
+    Node *root = new Node(1);
+    root->left = new Node(2);
+    root->right = new Node(2);
+    root->left->left = new Node(3);
+    root->left->right = new Node(4);
+    root->right->left = new Node(4);
+    root->right->right = new Node(3);
+    cout << is_symmetric(root, root) << endl;
     return 0;
 }

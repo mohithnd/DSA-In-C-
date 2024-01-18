@@ -266,8 +266,24 @@ void preorder_inorder_postorder(Node *root)
     cout << endl;
 }
 
+int max_path_sum_helper(Node *root, int &ans)
+{
+    if (root == nullptr)
+    {
+        return 0;
+    }
+    int left = max_path_sum_helper(root->left, ans);
+    int right = max_path_sum_helper(root->right, ans);
+    int node_max = max(max(root->data, root->data + left + right), max(root->data + left, root->data + right));
+    ans = max(ans, node_max);
+    return max(root->data, max(root->data + left, root->data + right));
+}
+
 void max_path_sum(Node *root)
 {
+    int ans = INT_MIN;
+    max_path_sum_helper(root, ans);
+    cout << ans << endl;
 }
 
 int main()

@@ -30,7 +30,8 @@ int largest_rectangle_in_histogram_1(vector<int> heights)
 
 int largest_rectangle_in_histogram_2(vector<int> heights)
 {
-    // O(5n) time | O(3n) space
+    // O(n) time | O(n) space
+    // 2 pass
     int ans = INT_MIN;
     stack<int> st;
     int n = heights.size();
@@ -74,10 +75,38 @@ int largest_rectangle_in_histogram_2(vector<int> heights)
     return ans;
 }
 
+int largest_rectangle_in_histogram_3(vector<int> heights)
+{
+    int ans = INT_MIN;
+    stack<int> st;
+    int n = heights.size();
+    for (int i = 0; i <= n; i++)
+    {
+        while (!st.empty() && (i == n || heights[st.top()] >= heights[i]))
+        {
+            int h = heights[st.top()];
+            st.pop();
+            int width;
+            if (st.empty())
+            {
+                width = i;
+            }
+            else
+            {
+                width = i - st.top() - 1;
+            }
+            ans = max(ans, h * width);
+        }
+        st.push(i);
+    }
+    return ans;
+}
+
 int main()
 {
     vector<int> heights = {2, 1, 5, 6, 2, 3, 1};
     cout << largest_rectangle_in_histogram_1(heights) << endl;
     cout << largest_rectangle_in_histogram_2(heights) << endl;
+    cout << largest_rectangle_in_histogram_3(heights) << endl;
     return 0;
 }

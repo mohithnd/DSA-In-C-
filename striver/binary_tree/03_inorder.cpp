@@ -14,19 +14,10 @@ public:
     }
 };
 
-void preorder(Node *root)
-{
-    if (!root)
-    {
-        return;
-    }
-    cout << root->data << " ";
-    preorder(root->left);
-    preorder(root->right);
-}
-
 void inorder(Node *root)
 {
+    // TC: O(n)
+    // SC: O(h) because of recursion stack
     if (!root)
     {
         return;
@@ -45,9 +36,6 @@ int main()
     root->left->right = new Node(5);
     root->right->left = new Node(6);
     root->right->right = new Node(7);
-    cout << "Preorder: ";
-    preorder(root);
-    cout << endl;
     cout << "Inorder: ";
     inorder(root);
     cout << endl;

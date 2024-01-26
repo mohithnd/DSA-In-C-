@@ -15,41 +15,10 @@ public:
     }
 };
 
-void preorder(Node *root)
-{
-    if (!root)
-    {
-        return;
-    }
-    cout << root->data << " ";
-    preorder(root->left);
-    preorder(root->right);
-}
-
-void inorder(Node *root)
-{
-    if (!root)
-    {
-        return;
-    }
-    inorder(root->left);
-    cout << root->data << " ";
-    inorder(root->right);
-}
-
-void postorder(Node *root)
-{
-    if (!root)
-    {
-        return;
-    }
-    postorder(root->left);
-    postorder(root->right);
-    cout << root->data << " ";
-}
-
 void level_order(Node *root)
 {
+    // TC: O(n)
+    // SC: O(n)
     if (!root)
     {
         return;
@@ -87,6 +56,45 @@ void level_order(Node *root)
     }
 }
 
+int height(Node *root)
+{
+    // TC: O(n)
+    // SC: O(h) because of recursion stack
+    if (!root)
+    {
+        return 0;
+    }
+    return 1 + max(height(root->left), height(root->right));
+}
+
+void print_current_level(Node *root, int level, int curr)
+{
+    // TC: O(n)
+    // SC: O(h) because of recursion stack
+    if (root == nullptr)
+    {
+        return;
+    }
+    if (level == curr)
+    {
+        cout << root->data << " ";
+    }
+    print_current_level(root->left, level, curr + 1);
+    print_current_level(root->right, level, curr + 1);
+}
+
+void level_order_2(Node *root)
+{
+    // TC: O(n^2)
+    // SC: O(h) because of recursion stack
+    int h = height(root);
+    for (int i = 1; i <= h; i++)
+    {
+        print_current_level(root, i, 1);
+        cout << endl;
+    }
+}
+
 int main()
 {
     Node *root = new Node(1);
@@ -97,6 +105,8 @@ int main()
     root->right->left = new Node(6);
     root->right->right = new Node(7);
     level_order(root);
+    cout << endl;
+    level_order_2(root);
     cout << endl;
     return 0;
 }

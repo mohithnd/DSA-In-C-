@@ -16,6 +16,8 @@ public:
 
 void preorder(Node *root)
 {
+    // TC: O(n)
+    // SC: O(h) because of recursion stack
     if (!root)
     {
         return;

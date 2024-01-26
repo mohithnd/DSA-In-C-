@@ -16,80 +16,10 @@ public:
     }
 };
 
-void preorder(Node *root)
-{
-    if (!root)
-    {
-        return;
-    }
-    cout << root->data << " ";
-    preorder(root->left);
-    preorder(root->right);
-}
-
-void inorder(Node *root)
-{
-    if (!root)
-    {
-        return;
-    }
-    inorder(root->left);
-    cout << root->data << " ";
-    inorder(root->right);
-}
-
-void postorder(Node *root)
-{
-    if (!root)
-    {
-        return;
-    }
-    postorder(root->left);
-    postorder(root->right);
-    cout << root->data << " ";
-}
-
-void level_order(Node *root)
-{
-    if (!root)
-    {
-        return;
-    }
-    queue<Node *> q;
-    q.push(root);
-    vector<vector<int>> res;
-    while (!q.empty())
-    {
-        vector<int> temp;
-        int n = q.size();
-        for (int i = 0; i < n; i++)
-        {
-            Node *curr = q.front();
-            q.pop();
-            temp.push_back(curr->data);
-            if (curr->left)
-            {
-                q.push(curr->left);
-            }
-            if (curr->right)
-            {
-                q.push(curr->right);
-            }
-        }
-        res.push_back(temp);
-    }
-    for (auto i : res)
-    {
-        for (auto j : i)
-        {
-            cout << j << " ";
-        }
-        cout << endl;
-    }
-}
-
 void iterative_preorder(Node *root)
 {
+    // TC: O(n)
+    // SC: O(n)
     if (!root)
     {
         return;
@@ -112,6 +42,35 @@ void iterative_preorder(Node *root)
     }
 }
 
+void iterative_preorder_2(Node *root)
+{
+    // TC: O(n)
+    // SC: O(n)
+    if (!root)
+    {
+        return;
+    }
+    stack<Node *> st;
+    Node *curr = root;
+    while (!st.empty() || curr != nullptr)
+    {
+        while (curr != nullptr)
+        {
+            cout << curr->data << " ";
+            if (curr->right)
+            {
+                st.push(curr->right);
+            }
+            curr = curr->left;
+        }
+        if (!st.empty())
+        {
+            curr = st.top();
+            st.pop();
+        }
+    }
+}
+
 int main()
 {
     Node *root = new Node(1);
@@ -123,6 +82,9 @@ int main()
     root->right->right = new Node(7);
     cout << "Preorder: ";
     iterative_preorder(root);
+    cout << endl;
+    cout << "Preorder: ";
+    iterative_preorder_2(root);
     cout << endl;
     return 0;
 }

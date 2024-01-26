@@ -16,104 +16,10 @@ public:
     }
 };
 
-void preorder(Node *root)
-{
-    if (!root)
-    {
-        return;
-    }
-    cout << root->data << " ";
-    preorder(root->left);
-    preorder(root->right);
-}
-
-void inorder(Node *root)
-{
-    if (!root)
-    {
-        return;
-    }
-    inorder(root->left);
-    cout << root->data << " ";
-    inorder(root->right);
-}
-
-void postorder(Node *root)
-{
-    if (!root)
-    {
-        return;
-    }
-    postorder(root->left);
-    postorder(root->right);
-    cout << root->data << " ";
-}
-
-void level_order(Node *root)
-{
-    if (!root)
-    {
-        return;
-    }
-    queue<Node *> q;
-    q.push(root);
-    vector<vector<int>> res;
-    while (!q.empty())
-    {
-        vector<int> temp;
-        int n = q.size();
-        for (int i = 0; i < n; i++)
-        {
-            Node *curr = q.front();
-            q.pop();
-            temp.push_back(curr->data);
-            if (curr->left)
-            {
-                q.push(curr->left);
-            }
-            if (curr->right)
-            {
-                q.push(curr->right);
-            }
-        }
-        res.push_back(temp);
-    }
-    for (auto i : res)
-    {
-        for (auto j : i)
-        {
-            cout << j << " ";
-        }
-        cout << endl;
-    }
-}
-
-void iterative_preorder(Node *root)
-{
-    if (!root)
-    {
-        return;
-    }
-    stack<Node *> s;
-    s.push(root);
-    while (!s.empty())
-    {
-        Node *curr = s.top();
-        s.pop();
-        cout << curr->data << " ";
-        if (curr->right)
-        {
-            s.push(curr->right);
-        }
-        if (curr->left)
-        {
-            s.push(curr->left);
-        }
-    }
-}
-
 void iterative_inorder(Node *root)
 {
+    // TC: O(n)
+    // SC: O(n)
     if (!root)
     {
         return;

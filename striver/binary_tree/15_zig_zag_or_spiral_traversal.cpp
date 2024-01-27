@@ -179,6 +179,8 @@ void zig_zag_or_spiral_traversal_deque(Node *root)
 
 void zig_zag_or_spiral_traversal_stacks(Node *root)
 {
+    // Time Complexity: O(n)
+    // Space Complexity: O(n)
     if (root == nullptr)
     {
         cout << endl;
@@ -225,6 +227,49 @@ void zig_zag_or_spiral_traversal_stacks(Node *root)
     cout << endl;
 }
 
+void dfs_preorder(Node *root, int level, vector<vector<int>> &res)
+{
+    // Time Complexity: O(n)
+    // Space Complexity: O(n) because of recursion stack
+    if (root == nullptr)
+    {
+        return;
+    }
+    if (level >= res.size())
+    {
+        res.push_back({});
+    }
+    res[level].push_back(root->data);
+    dfs_preorder(root->left, level + 1, res);
+    dfs_preorder(root->right, level + 1, res);
+}
+
+void zig_zag_or_spiral_traversal_dfs_preorder(Node *root)
+{
+    // Time Complexity: O(n)
+    // Space Complexity: O(n) because of recursion stack
+    if (root == nullptr)
+    {
+        cout << endl;
+        return;
+    }
+    vector<vector<int>> res;
+    dfs_preorder(root, 0, res);
+    for (int i = 1; i < res.size(); i = i + 2)
+    {
+        reverse(res[i].begin(), res[i].end());
+    }
+    for (auto i : res)
+    {
+        for (auto j : i)
+        {
+            cout << j << " ";
+        }
+        cout << endl;
+    }
+    cout << endl;
+}
+
 int main()
 {
     Node *root = new Node(1);
@@ -239,5 +284,6 @@ int main()
     zig_zag_or_spiral_traversal_recursive(root);
     zig_zag_or_spiral_traversal_deque(root);
     zig_zag_or_spiral_traversal_stacks(root);
+    zig_zag_or_spiral_traversal_dfs_preorder(root);
     return 0;
 }

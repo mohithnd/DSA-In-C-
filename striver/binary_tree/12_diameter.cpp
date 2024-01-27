@@ -47,6 +47,8 @@ int diameter(Node *root)
 
 void solve_diameter_2(Node *root, int &height, int &diameter)
 {
+    // Time: O(n)
+    // Space: O(n) because of recursion stack
     if (root == nullptr)
     {
         height = 0;
@@ -63,6 +65,8 @@ void solve_diameter_2(Node *root, int &height, int &diameter)
 
 int diameter_2(Node *root)
 {
+    // Time: O(n)
+    // Space: O(n) because of recursion stack
     int height = 0;
     int diameter = 0;
     solve_diameter_2(root, height, diameter);

@@ -4,6 +4,7 @@
 #include <stack>
 #include <algorithm>
 #include <set>
+#include <unordered_map>
 using namespace std;
 
 class Node
@@ -19,258 +20,10 @@ public:
     }
 };
 
-void preorder(Node *root)
-{
-    if (!root)
-    {
-        return;
-    }
-    cout << root->data << " ";
-    preorder(root->left);
-    preorder(root->right);
-}
-
-void inorder(Node *root)
-{
-    if (!root)
-    {
-        return;
-    }
-    inorder(root->left);
-    cout << root->data << " ";
-    inorder(root->right);
-}
-
-void postorder(Node *root)
-{
-    if (!root)
-    {
-        return;
-    }
-    postorder(root->left);
-    postorder(root->right);
-    cout << root->data << " ";
-}
-
-void level_order(Node *root)
-{
-    if (!root)
-    {
-        return;
-    }
-    queue<Node *> q;
-    q.push(root);
-    vector<vector<int>> res;
-    while (!q.empty())
-    {
-        vector<int> temp;
-        int n = q.size();
-        for (int i = 0; i < n; i++)
-        {
-            Node *curr = q.front();
-            q.pop();
-            temp.push_back(curr->data);
-            if (curr->left)
-            {
-                q.push(curr->left);
-            }
-            if (curr->right)
-            {
-                q.push(curr->right);
-            }
-        }
-        res.push_back(temp);
-    }
-    for (auto i : res)
-    {
-        for (auto j : i)
-        {
-            cout << j << " ";
-        }
-        cout << endl;
-    }
-}
-
-void iterative_preorder(Node *root)
-{
-    if (!root)
-    {
-        return;
-    }
-    stack<Node *> s;
-    s.push(root);
-    while (!s.empty())
-    {
-        Node *curr = s.top();
-        s.pop();
-        cout << curr->data << " ";
-        if (curr->right)
-        {
-            s.push(curr->right);
-        }
-        if (curr->left)
-        {
-            s.push(curr->left);
-        }
-    }
-}
-
-void iterative_inorder(Node *root)
-{
-    if (!root)
-    {
-        return;
-    }
-    stack<Node *> st;
-    Node *curr = root;
-    while (true)
-    {
-        if (curr != nullptr)
-        {
-            st.push(curr);
-            curr = curr->left;
-        }
-        else
-        {
-            if (st.empty() == true)
-            {
-                break;
-            }
-            curr = st.top();
-            st.pop();
-            cout << curr->data << " ";
-            curr = curr->right;
-        }
-    }
-}
-
-void iterative_postorder_using_two_stacks(Node *root)
-{
-    if (!root)
-    {
-        return;
-    }
-    stack<Node *> st1, st2;
-    st1.push(root);
-    while (!st1.empty())
-    {
-        Node *curr = st1.top();
-        st1.pop();
-        st2.push(curr);
-        if (curr->left)
-        {
-            st1.push(curr->left);
-        }
-        if (curr->right)
-        {
-            st1.push(curr->right);
-        }
-    }
-    while (!st2.empty())
-    {
-        cout << st2.top()->data << " ";
-        st2.pop();
-    }
-}
-
-void iterative_postorder_using_single_stacks(Node *root)
-{
-    if (!root)
-    {
-        return;
-    }
-    stack<Node *> st;
-    Node *curr = root;
-    while (curr != nullptr || st.empty() == false)
-    {
-        if (curr != nullptr)
-        {
-            st.push(curr);
-            curr = curr->left;
-        }
-        else
-        {
-            Node *temp = st.top()->right;
-            if (temp == nullptr)
-            {
-                temp = st.top();
-                st.pop();
-                cout << temp->data << " ";
-                while (!st.empty() && temp == st.top()->right)
-                {
-                    temp = st.top();
-                    st.pop();
-                    cout << temp->data << " ";
-                }
-            }
-            else
-            {
-                curr = temp;
-            }
-        }
-    }
-}
-
-void preorder_inorder_postorder(Node *root)
-{
-    if (!root)
-    {
-        return;
-    }
-    vector<int> pre, in, post;
-    stack<pair<Node *, int>> st;
-    st.push({root, 1});
-    while (!st.empty())
-    {
-        pair<Node *, int> curr = st.top();
-        st.pop();
-        if (curr.second == 1)
-        {
-            pre.push_back(curr.first->data);
-            curr.second++;
-            st.push(curr);
-            if (curr.first->left)
-            {
-                st.push({curr.first->left, 1});
-            }
-        }
-        else if (curr.second == 2)
-        {
-            in.push_back(curr.first->data);
-            curr.second++;
-            st.push(curr);
-            if (curr.first->right)
-            {
-                st.push({curr.first->right, 1});
-            }
-        }
-        else
-        {
-            post.push_back(curr.first->data);
-        }
-    }
-    cout << "Preorder: ";
-    for (auto i : pre)
-    {
-        cout << i << " ";
-    }
-    cout << endl;
-    cout << "Inorder: ";
-    for (auto i : in)
-    {
-        cout << i << " ";
-    }
-    cout << endl;
-    cout << "Postorder: ";
-    for (auto i : post)
-    {
-        cout << i << " ";
-    }
-    cout << endl;
-}
-
 void bottom_view(Node *root)
 {
+    // Time Complexity: O(nlogn)
+    // Space Complexity: O(n)
     vector<int> res;
     if (root == nullptr)
     {
@@ -301,6 +54,83 @@ void bottom_view(Node *root)
     {
         cout << i << " ";
     }
+    cout << endl;
+}
+
+void solve(Node *root, int hd, int level, map<int, pair<Node *, int>> &m)
+{
+    // Time Complexity: O(nlogn)
+    // Space Complexity: O(n) because of recursion stack
+    if (root == nullptr)
+    {
+        return;
+    }
+    if (m.find(hd) == m.end() || level >= m[hd].second)
+    {
+        m[hd] = {root, level};
+    }
+    solve(root->left, hd - 1, level + 1, m);
+    solve(root->right, hd + 1, level + 1, m);
+}
+
+void bottom_view_2(Node *root)
+{
+    // Time Complexity: O(nlogn)
+    // Space Complexity: O(n)
+    if (root == nullptr)
+    {
+        cout << endl;
+        return;
+    }
+    vector<int> res;
+    map<int, pair<Node *, int>> m;
+    solve(root, 0, 0, m);
+    for (auto i : m)
+    {
+        res.push_back(i.second.first->data);
+    }
+    for (int i : res)
+    {
+        cout << i << " ";
+    }
+    cout << endl;
+}
+
+void bottom_view_3(Node *root)
+{
+    // Time Complexity: O(n)
+    // Space Complexity: O(n)
+    if (!root)
+    {
+        cout << endl;
+        return;
+    }
+    int left_most = 0;
+    int right_most = 0;
+    unordered_map<int, int> m;
+    queue<pair<Node *, int>> q;
+    q.push({root, 0});
+    while (!q.empty())
+    {
+        pair<Node *, int> curr = q.front();
+        q.pop();
+        m[curr.second] = curr.first->data;
+        left_most = min(left_most, curr.second);
+        right_most = max(right_most, curr.second);
+        if (curr.first->left)
+        {
+            q.push({curr.first->left, curr.second - 1});
+        }
+        if (curr.first->right)
+        {
+            q.push({curr.first->right, curr.second + 1});
+        }
+    }
+    for (int i = left_most; i <= right_most; i++)
+    {
+        cout << m[i] << " ";
+    }
+    cout << endl;
 }
 
 int main()
@@ -315,5 +145,7 @@ int main()
     root->right->left = new Node(6);
     root->right->right = new Node(7);
     bottom_view(root);
+    bottom_view_2(root);
+    bottom_view_3(root);
     return 0;
 }

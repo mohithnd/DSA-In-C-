@@ -19,6 +19,8 @@ public:
 
 void left(Node *root, vector<int> &res)
 {
+    // time: O(n)
+    // space: O(h) - recursion stack
     if (root == nullptr)
     {
         return;
@@ -40,6 +42,8 @@ void left(Node *root, vector<int> &res)
 
 void leaf(Node *root, vector<int> &res)
 {
+    // time: O(n)
+    // space: O(h) - recursion stack
     if (root == nullptr)
     {
         return;
@@ -55,6 +59,8 @@ void leaf(Node *root, vector<int> &res)
 
 void right(Node *root, vector<int> &res)
 {
+    // time: O(n)
+    // space: O(h) - recursion stack
     if (root == nullptr)
     {
         return;
@@ -76,6 +82,8 @@ void right(Node *root, vector<int> &res)
 
 void boundary_traversal(Node *root)
 {
+    // time: O(n)
+    // space: O(h) - recursion stack
     vector<int> res;
     if (root == NULL)
     {
@@ -89,6 +97,97 @@ void boundary_traversal(Node *root)
     {
         cout << i << " ";
     }
+    cout << endl;
+}
+
+bool is_leaf(Node *root)
+{
+    return root->left == nullptr && root->right == nullptr;
+}
+
+void add_left(Node *root, vector<int> &res)
+{
+    // time: O(n)
+    // space: O(1)
+    while (root)
+    {
+        if (!is_leaf(root))
+        {
+            res.push_back(root->data);
+        }
+        if (root->left)
+        {
+            root = root->left;
+        }
+        else
+        {
+            root = root->right;
+        }
+    }
+}
+
+void add_leaf(Node *root, vector<int> &res)
+{
+    // time: O(n)
+    // space: O(h) - recursion stack
+    if (root == nullptr)
+    {
+        return;
+    }
+    if (is_leaf(root))
+    {
+        res.push_back(root->data);
+        return;
+    }
+    add_leaf(root->left, res);
+    add_leaf(root->right, res);
+}
+
+void add_right(Node *root, vector<int> &res)
+{
+    // time: O(n)
+    // space: O(n)
+    stack<int> s;
+    while (root)
+    {
+        if (!is_leaf(root))
+        {
+            s.push(root->data);
+        }
+        if (root->right)
+        {
+            root = root->right;
+        }
+        else
+        {
+            root = root->left;
+        }
+    }
+    while (!s.empty())
+    {
+        res.push_back(s.top());
+        s.pop();
+    }
+}
+
+void boundary_traversal_iterative(Node *root)
+{
+    // time: O(n)
+    // space: O(h) - recursion stack
+    if (root == nullptr)
+    {
+        return;
+    }
+    vector<int> res;
+    res.push_back(root->data);
+    add_left(root->left, res);
+    add_leaf(root, res);
+    add_right(root->right, res);
+    for (int i : res)
+    {
+        cout << i << " ";
+    }
+    cout << endl;
 }
 
 int main()
@@ -103,5 +202,6 @@ int main()
     root->right->right = new Node(25);
 
     boundary_traversal(root);
+    boundary_traversal_iterative(root);
     return 0;
 }

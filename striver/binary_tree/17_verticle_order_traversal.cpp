@@ -35,7 +35,7 @@ void solve_vericle_order_1(Node *root, int x, int y, map<int, map<int, multiset<
 void vericle_order_1(Node *root)
 {
     // time complexity:- O(nlogn)
-    // space complexity:- O(n) because of recursion map and recursion stack
+    // space complexity:- O(n)
     vector<vector<int>> res;
     map<int, map<int, multiset<int>>> mp;
     solve_vericle_order_1(root, 0, 0, mp);
@@ -109,18 +109,18 @@ void vericle_order_2(Node *root)
 
 int main()
 {
-    Node *root = new Node(1);
-    root->left = new Node(2);
-    root->right = new Node(3);
-    root->left->left = new Node(4);
-    root->left->right = new Node(10);
-    root->right->left = new Node(9);
-    root->right->right = new Node(10);
-    root->left->left->right = new Node(5);
-    root->left->left->right->right = new Node(6);
-
+    Node *root = new Node(2);
+    root->left = new Node(7);
+    root->right = new Node(5);
+    root->left->left = new Node(2);
+    root->left->right = new Node(6);
+    root->left->right->left = new Node(5);
+    root->left->right->right = new Node(11);
+    root->right->right = new Node(9);
+    root->right->right->left = new Node(4);
     vericle_order_1(root);
     cout << endl;
     vericle_order_2(root);
+    cout << endl;
     return 0;
 }

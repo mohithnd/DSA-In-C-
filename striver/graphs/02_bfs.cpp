@@ -3,20 +3,6 @@
 #include <queue>
 using namespace std;
 
-void print_matrix(vector<vector<int>> matrix)
-{
-    cout << "Adjacency Matrix:-" << endl;
-    for (auto row : matrix)
-    {
-        for (auto col : row)
-        {
-            cout << col << " ";
-        }
-        cout << endl;
-    }
-    cout << endl;
-}
-
 void print_list(vector<vector<int>> list)
 {
     cout << "Adjacency List:-" << endl;
@@ -30,20 +16,6 @@ void print_list(vector<vector<int>> list)
         cout << endl;
     }
     cout << endl;
-}
-
-vector<vector<int>> adjacency_matrix(int n, int m, vector<pair<int, int>> pairs, bool directed)
-{
-    vector<vector<int>> adj_matrix(n, vector<int>(n, 0));
-    for (pair<int, int> p : pairs)
-    {
-        adj_matrix[p.first][p.second] = 1;
-        if (!directed)
-        {
-            adj_matrix[p.second][p.first] = 1;
-        }
-    }
-    return adj_matrix;
 }
 
 vector<vector<int>> adjacency_list(int n, int m, vector<pair<int, int>> pairs, bool directed)
@@ -60,10 +32,43 @@ vector<vector<int>> adjacency_list(int n, int m, vector<pair<int, int>> pairs, b
     return adj_list;
 }
 
-void bfs(vector<vector<int>> adj_list)
+void bfs_connected_components(vector<vector<int>> adj_list)
 {
-    // time complexity: O(N + 2E)
-    // space complexity: O(N)
+    vector<bool> visited(adj_list.size() + 1, false);
+    queue<int> q;
+    for (int i = 0; i < adj_list.size(); i++)
+    {
+        if (!visited[i])
+        {
+            q.push(i);
+            visited[i] = true;
+            while (!q.empty())
+            {
+                int node = q.front();
+                q.pop();
+                cout << node << " ";
+                for (int i : adj_list[node])
+                {
+                    if (!visited[i])
+                    {
+                        q.push(i);
+                        visited[i] = true;
+                    }
+                }
+            }
+            cout << endl;
+        }
+    }
+    cout << endl;
+}
+
+void bfs(vector<vector<int>> adj_list, bool connected_components = false)
+{
+    if (connected_components)
+    {
+        bfs_connected_components(adj_list);
+        return;
+    }
     vector<bool> visited(adj_list.size() + 1, false);
     queue<int> q;
     q.push(0);
@@ -93,5 +98,14 @@ int main()
     vector<vector<int>> adj_list = adjacency_list(n, m, pairs, false);
     print_list(adj_list);
     bfs(adj_list);
+
+    cout << endl;
+
+    n = 5;
+    m = 4;
+    pairs = {{0, 2}, {0, 1}, {1, 2}, {3, 4}};
+    adj_list = adjacency_list(n, m, pairs, false);
+    print_list(adj_list);
+    bfs(adj_list, true);
     return 0;
 }

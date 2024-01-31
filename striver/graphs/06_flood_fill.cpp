@@ -77,63 +77,35 @@ vector<vector<int>> flood_fill_bfs(vector<vector<int>> image, int sr, int sc, in
         q.pop();
         int r = p.first;
         int c = p.second;
-        int nr, nc;
-        nr = r - 1, nc = c;
-        if (nr >= 0 && nc >= 0 && nr < n && nc < m && !visited[nr][nc] && (image[nr][nc] == old_color))
+        vector<int> del_row = {-1, 1, 0, 0};
+        vector<int> del_col = {0, 0, -1, 1};
+        for (int i = 0; i < 4; i++)
         {
-            visited[nr][nc] = true;
-            image[nr][nc] = new_color;
-            q.push({nr, nc});
-        }
-        nr = r + 1, nc = c;
-        if (nr >= 0 && nc >= 0 && nr < n && nc < m && !visited[nr][nc] && (image[nr][nc] == old_color))
-        {
-            visited[nr][nc] = true;
-            image[nr][nc] = new_color;
-            q.push({nr, nc});
-        }
-        nr = r, nc = c - 1;
-        if (nr >= 0 && nc >= 0 && nr < n && nc < m && !visited[nr][nc] && (image[nr][nc] == old_color))
-        {
-            visited[nr][nc] = true;
-            image[nr][nc] = new_color;
-            q.push({nr, nc});
-        }
-        nr = r, nc = c + 1;
-        if (nr >= 0 && nc >= 0 && nr < n && nc < m && !visited[nr][nc] && (image[nr][nc] == old_color))
-        {
-            visited[nr][nc] = true;
-            image[nr][nc] = new_color;
-            q.push({nr, nc});
+            int nr = r + del_row[i];
+            int nc = c + del_col[i];
+            if (nr >= 0 && nc >= 0 && nr < image.size() && nc < image[0].size() && !visited[nr][nc] && image[nr][nc] == old_color)
+            {
+                q.push({nr, nc});
+                visited[nr][nc] = true;
+                image[nr][nc] = new_color;
+            }
         }
     }
     return image;
 }
 
-void solve_flood_fill_dfs(vector<vector<int>> &image, int r, int c, int new_color, int old_color, vector<vector<bool>> &visited)
+void solve_flood_fill_dfs(vector<vector<int>> &image, int r, int c, int new_color, int old_color, vector<vector<bool>> &visited, vector<int> del_row, vector<int> del_col)
 {
     visited[r][c] = true;
     image[r][c] = new_color;
-    int nr, nc;
-    nr = r - 1, nc = c;
-    if (nr >= 0 && nc >= 0 && nr < image.size() && nc < image[0].size() && !visited[nr][nc] && (image[nr][nc] == old_color))
+    for (int i = 0; i < 4; i++)
     {
-        solve_flood_fill_dfs(image, nr, nc, new_color, old_color, visited);
-    }
-    nr = r + 1, nc = c;
-    if (nr >= 0 && nc >= 0 && nr < image.size() && nc < image[0].size() && !visited[nr][nc] && (image[nr][nc] == old_color))
-    {
-        solve_flood_fill_dfs(image, nr, nc, new_color, old_color, visited);
-    }
-    nr = r, nc = c - 1;
-    if (nr >= 0 && nc >= 0 && nr < image.size() && nc < image[0].size() && !visited[nr][nc] && (image[nr][nc] == old_color))
-    {
-        solve_flood_fill_dfs(image, nr, nc, new_color, old_color, visited);
-    }
-    nr = r, nc = c + 1;
-    if (nr >= 0 && nc >= 0 && nr < image.size() && nc < image[0].size() && !visited[nr][nc] && (image[nr][nc] == old_color))
-    {
-        solve_flood_fill_dfs(image, nr, nc, new_color, old_color, visited);
+        int nr = r + del_row[i];
+        int nc = c + del_col[i];
+        if (nr >= 0 && nc >= 0 && nr < image.size() && nc < image[0].size() && !visited[nr][nc] && image[nr][nc] == old_color)
+        {
+            solve_flood_fill_dfs(image, nr, nc, new_color, old_color, visited, del_row, del_col);
+        }
     }
 }
 
@@ -143,7 +115,9 @@ vector<vector<int>> flood_fill_dfs(vector<vector<int>> image, int sr, int sc, in
     int m = image[0].size();
     vector<vector<bool>> visited(n, vector<bool>(m, false));
     int old_color = image[sr][sc];
-    solve_flood_fill_dfs(image, sr, sc, new_color, old_color, visited);
+    vector<int> del_row = {-1, 1, 0, 0};
+    vector<int> del_col = {0, 0, -1, 1};
+    solve_flood_fill_dfs(image, sr, sc, new_color, old_color, visited, del_row, del_col);
     return image;
 }
 

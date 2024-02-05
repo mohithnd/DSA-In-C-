@@ -19,52 +19,31 @@ public:
     }
 };
 
-void mark_parents(Node *root, map<Node *, Node *> &parents)
+Node *bfs_to_map_parents_and_find_node(Node *root, map<Node *, Node *> &parents, int target)
 {
-    if (root == nullptr)
-    {
-        return;
-    }
+    Node *node = nullptr;
     queue<Node *> q;
     q.push(root);
     while (!q.empty())
     {
-        Node *node = q.front();
+        Node *curr = q.front();
+        if (curr->data == target)
+        {
+            node = curr;
+        }
         q.pop();
-        if (node->left)
+        if (curr->left)
         {
-            q.push(node->left);
-            parents[node->left] = node;
+            parents[curr->left] = curr;
+            q.push(curr->left);
         }
-        if (node->right)
+        if (curr->right)
         {
-            q.push(node->right);
-            parents[node->right] = node;
+            parents[curr->right] = curr;
+            q.push(curr->right);
         }
     }
-}
-
-Node *find_node(Node *root, int target)
-{
-    if (root == nullptr)
-    {
-        return nullptr;
-    }
-    if (root->data == target)
-    {
-        return root;
-    }
-    Node *left = find_node(root->left, target);
-    if (left)
-    {
-        return left;
-    }
-    Node *right = find_node(root->right, target);
-    if (right)
-    {
-        return right;
-    }
-    return nullptr;
+    return node;
 }
 
 void print_nodes_at_distance_k(Node *root, int k, int target)
@@ -75,8 +54,7 @@ void print_nodes_at_distance_k(Node *root, int k, int target)
         return;
     }
     map<Node *, Node *> parents;
-    mark_parents(root, parents);
-    Node *target_node = find_node(root, target);
+    Node *target_node = bfs_to_map_parents_and_find_node(root, parents, target);
     map<Node *, bool> visited;
     queue<pair<Node *, int>> q;
     q.push({target_node, 0});

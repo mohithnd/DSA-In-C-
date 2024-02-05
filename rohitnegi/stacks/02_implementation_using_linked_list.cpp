@@ -1,36 +1,39 @@
 #include <iostream>
 using namespace std;
 
+class Node
+{
+public:
+    int data;
+    Node *next;
+    Node(int data)
+    {
+        this->data = data;
+        next = NULL;
+    }
+};
+
 class Stack
 {
-    int *arr;
-    int top;
+    Node *top;
     int size;
 
 public:
-    Stack(int size)
+    Stack()
     {
-        arr = new int[size];
-        top = -1;
-        this->size = size;
+        top = NULL;
+        size = 0;
     }
     bool empty()
     {
-        return top == -1;
-    }
-    bool full()
-    {
-        return top == size - 1;
+        return top == NULL;
     }
     void push(int x)
     {
-        if (full())
-        {
-            cout << "Stack Overflow" << endl;
-            return;
-        }
-        top++;
-        arr[top] = x;
+        Node *temp = new Node(x);
+        temp->next = top;
+        top = temp;
+        size++;
         cout << x << " pushed into stack" << endl;
     }
     void pop()
@@ -40,8 +43,11 @@ public:
             cout << "Stack Underflow" << endl;
             return;
         }
-        int x = arr[top];
-        top--;
+        int x = top->data;
+        Node *temp = top;
+        top = top->next;
+        delete temp;
+        size--;
         cout << x << " popped from stack" << endl;
     }
     int peek()
@@ -51,17 +57,19 @@ public:
             cout << "Stack Underflow" << endl;
             return -1;
         }
-        return arr[top];
-    };
+        return top->data;
+    }
     int getSize()
     {
-        return top + 1;
+        return size;
     }
     void display()
     {
-        for (int i = 0; i <= top; i++)
+        Node *temp = top;
+        while (temp != NULL)
         {
-            cout << arr[i] << " ";
+            cout << temp->data << " ";
+            temp = temp->next;
         }
         cout << endl;
     }
@@ -69,7 +77,7 @@ public:
 
 int main()
 {
-    Stack s(5);
+    Stack s;
     s.push(10);
     s.push(20);
     s.push(30);

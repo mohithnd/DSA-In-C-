@@ -116,10 +116,57 @@ vector<int> max_of_min_of_for_every_window_3(vector<int> arr)
         {
             w += right - i - 1;
         }
-        for (int win = 0; win < w; win++)
+        ans[w - 1] = max(ans[w - 1], arr[i]);
+    }
+    for (int i = n - 2; i >= 0; i--)
+    {
+        ans[i] = max(ans[i], ans[i + 1]);
+    }
+    return ans;
+}
+
+vector<int> max_of_min_of_for_every_window_4(vector<int> arr)
+{
+    int n = arr.size();
+    vector<int> ans(n, INT_MIN);
+    stack<int> st;
+    for (int i = 0; i < n; i++)
+    {
+        while (!st.empty() && arr[i] < arr[st.top()])
         {
-            ans[win] = max(ans[win], arr[i]);
+            int index = st.top();
+            st.pop();
+            if (st.empty())
+            {
+                int range = i;
+                ans[range - 1] = max(ans[range - 1], arr[index]);
+            }
+            else
+            {
+                int range = i - st.top() - 1;
+                ans[range - 1] = max(ans[range - 1], arr[index]);
+            }
         }
+        st.push(i);
+    }
+    while (!st.empty())
+    {
+        int index = st.top();
+        st.pop();
+        if (st.empty())
+        {
+            int range = n;
+            ans[range - 1] = max(ans[range - 1], arr[index]);
+        }
+        else
+        {
+            int range = n - 1 - st.top();
+            ans[range - 1] = max(ans[range - 1], arr[index]);
+        }
+    }
+    for (int i = n - 2; i >= 0; i--)
+    {
+        ans[i] = max(ans[i], ans[i + 1]);
     }
     return ans;
 }
@@ -130,5 +177,6 @@ int main()
     print(max_of_min_of_for_every_window_1(arr));
     print(max_of_min_of_for_every_window_2(arr));
     print(max_of_min_of_for_every_window_3(arr));
+    print(max_of_min_of_for_every_window_4(arr));
     return 0;
 }

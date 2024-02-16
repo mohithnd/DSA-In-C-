@@ -71,6 +71,38 @@ Node *rotate_1(Node *head, int k)
     return ans;
 }
 
+Node *rotate_2(Node *head, int k)
+{
+    if (head == nullptr || head->next == nullptr)
+    {
+        return head;
+    }
+    vector<int> arr;
+    Node *temp = head;
+    while (temp)
+    {
+        arr.push_back(temp->data);
+        temp = temp->next;
+    }
+    temp = head;
+    k = k % arr.size();
+    if (k == 0)
+    {
+        return head;
+    }
+    for (int i = arr.size() - k; i < arr.size(); i++)
+    {
+        temp->data = arr[i];
+        temp = temp->next;
+    }
+    for (int i = 0; i < arr.size() - k; i++)
+    {
+        temp->data = arr[i];
+        temp = temp->next;
+    }
+    return head;
+}
+
 int main()
 {
     Node *head = new Node(10);
@@ -79,7 +111,8 @@ int main()
     head->next->next->next = new Node(40);
     head->next->next->next->next = new Node(50);
     print(head);
-    head = rotate_1(head, 2);
+    // head = rotate_1(head, 2);
+    head = rotate_2(head, 2);
     print(head);
     return 0;
 }

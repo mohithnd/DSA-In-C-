@@ -16,17 +16,15 @@ void print(queue<int> q)
 void print_all_in_window_k(vector<int> arr, int k)
 {
     queue<int> q;
-    for (int i = 0; i < k; i++)
+    for (int i = 0; i < k - 1; i++)
     {
         q.push(arr[i]);
     }
-    int j = k;
-    while (j <= arr.size())
+    for (int i = k - 1; i < arr.size(); i++)
     {
+        q.push(arr[i]);
         print(q);
         q.pop();
-        q.push(arr[j]);
-        j++;
     }
     cout << endl;
 }

@@ -17,7 +17,7 @@ public:
     }
 };
 
-void left_most(Node *root, vector<int> &ans)
+void left(Node *root, vector<int> &ans)
 {
     if (root == nullptr)
     {
@@ -30,15 +30,15 @@ void left_most(Node *root, vector<int> &ans)
     ans.push_back(root->data);
     if (root->left)
     {
-        left_most(root->left, ans);
+        left(root->left, ans);
     }
     else
     {
-        left_most(root->right, ans);
+        left(root->right, ans);
     }
 }
 
-void right_most(Node *root, vector<int> &ans)
+void right(Node *root, vector<int> &ans)
 {
     if (root == nullptr)
     {
@@ -50,11 +50,11 @@ void right_most(Node *root, vector<int> &ans)
     }
     if (root->right)
     {
-        left_most(root->right, ans);
+        right(root->right, ans);
     }
     else
     {
-        left_most(root->left, ans);
+        right(root->left, ans);
     }
     ans.push_back(root->data);
 }
@@ -82,9 +82,11 @@ void boundary(Node *root)
         return;
     }
     vector<int> ans;
-    left_most(root, ans);
-    leaves(root, ans);
-    right_most(root->right, ans);
+    ans.push_back(root->data);
+    left(root->left, ans);
+    leaves(root->left, ans);
+    leaves(root->right, ans);
+    right(root->right, ans);
     for (int i : ans)
     {
         cout << i << " ";

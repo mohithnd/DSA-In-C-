@@ -51,41 +51,60 @@ Node *delete_node(Node *root, int target)
     {
         return nullptr;
     }
-    if (root->data == target)
+    if (target < root->data)
+    {
+        root->left = delete_node(root->left, target);
+        return root;
+    }
+    else if (target > root->data)
+    {
+        root->right = delete_node(root->right, target);
+        return root;
+    }
+    else
     {
         if (root->left == nullptr && root->right == nullptr)
         {
             delete root;
             return nullptr;
         }
-        else if (root->left == nullptr || root->right == nullptr)
+        else if (root->left && root->right)
         {
-            if (root->left)
+            Node *child = root->left;
+            Node *parent = root;
+            while (child->right)
             {
-                Node *temp = root->left;
+                parent = child;
+                child = child->right;
+            }
+            if (parent != root)
+            {
+                parent->right = child->left;
+                child->left = root->left;
+                child->right = root->right;
                 delete root;
-                return temp;
+                return child;
             }
             else
             {
-                Node *temp = root->right;
+                child->right = root->right;
                 delete root;
-                return temp;
+                return child;
             }
+        }
+        else if (root->left)
+        {
+            Node *temp = root->left;
+            delete root;
+            return temp;
         }
         else
         {
+            Node *temp = root->right;
+            delete root;
+            return temp;
         }
     }
-    if (target < root->data)
-    {
-        root->left = delete_node(root->left, target);
-    }
-    else
-    {
-        root->right = delete_node(root->right, target);
-    }
-    return root;
 }
 
 int main()

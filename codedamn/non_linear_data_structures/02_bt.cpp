@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <queue>
+#include <unordered_map>
+#include <map>
 using namespace std;
 
 class Node
@@ -296,6 +298,450 @@ public:
         }
         return ans;
     }
+
+    void add_left(Node *root, vector<int> &ans)
+    {
+        if (root == nullptr)
+        {
+            return;
+        }
+        if (root->left == nullptr && root->right == nullptr)
+        {
+            return;
+        }
+        ans.push_back(root->data);
+        if (root->left)
+        {
+            add_left(root->left, ans);
+        }
+        else
+        {
+            add_left(root->right, ans);
+        }
+    }
+
+    void add_leaves(Node *root, vector<int> &ans)
+    {
+        if (root == nullptr)
+        {
+            return;
+        }
+        if (root->left == nullptr && root->right == nullptr)
+        {
+            ans.push_back(root->data);
+            return;
+        }
+        add_leaves(root->left, ans);
+        add_leaves(root->right, ans);
+    }
+
+    void add_right(Node *root, vector<int> &ans)
+    {
+        if (root == nullptr)
+        {
+            return;
+        }
+        if (root->left == nullptr && root->right == nullptr)
+        {
+            return;
+        }
+        if (root->right)
+        {
+            add_right(root->right, ans);
+        }
+        else
+        {
+            add_right(root->left, ans);
+        }
+        ans.push_back(root->data);
+    }
+
+    vector<int> boundary()
+    {
+        vector<int> ans;
+        if (this->root == nullptr)
+        {
+            return ans;
+        }
+        ans.push_back(root->data);
+        add_left(root->left, ans);
+        add_leaves(root->left, ans);
+        add_leaves(root->right, ans);
+        add_right(root->right, ans);
+        return ans;
+    }
+
+    vector<int> verticle_order()
+    {
+        vector<int> ans;
+        if (root == nullptr)
+        {
+            return ans;
+        }
+        map<int, vector<int>> m;
+        queue<pair<Node *, int>> q;
+        q.push({root, 0});
+        while (!q.empty())
+        {
+            Node *curr = q.front().first;
+            int x = q.front().second;
+            m[x].push_back(curr->data);
+            q.pop();
+            if (curr->left)
+            {
+                q.push({curr->left, x - 1});
+            }
+            if (curr->right)
+            {
+                q.push({curr->right, x + 1});
+            }
+        }
+        for (auto line : m)
+        {
+            for (int i : line.second)
+            {
+                ans.push_back(i);
+            }
+        }
+        return ans;
+    }
+
+    vector<int> top_view()
+    {
+        vector<int> ans;
+        if (root == nullptr)
+        {
+            return ans;
+        }
+        queue<pair<Node *, int>> q;
+        q.push({root, 0});
+        map<int, int> m;
+        while (!q.empty())
+        {
+            Node *curr = q.front().first;
+            int x = q.front().second;
+            q.pop();
+            if (m.find(x) == m.end())
+            {
+                m[x] = curr->data;
+            }
+            if (curr->left)
+            {
+                q.push({curr->left, x - 1});
+            }
+            if (curr->right)
+            {
+                q.push({curr->right, x + 1});
+            }
+        }
+        for (auto i : m)
+        {
+            ans.push_back(i.second);
+        }
+        return ans;
+    }
+
+    vector<int> bottom_view()
+    {
+        vector<int> ans;
+        if (root == nullptr)
+        {
+            return ans;
+        }
+        queue<pair<Node *, int>> q;
+        q.push({root, 0});
+        map<int, int> m;
+        while (!q.empty())
+        {
+            Node *curr = q.front().first;
+            int x = q.front().second;
+            q.pop();
+            m[x] = curr->data;
+            if (curr->left)
+            {
+                q.push({curr->left, x - 1});
+            }
+            if (curr->right)
+            {
+                q.push({curr->right, x + 1});
+            }
+        }
+        for (auto i : m)
+        {
+            ans.push_back(i.second);
+        }
+        return ans;
+    }
+
+    vector<int> right_view()
+    {
+        vector<int> ans;
+        if (root == nullptr)
+        {
+            return ans;
+        }
+        queue<Node *> q;
+        q.push(root);
+        while (!q.empty())
+        {
+            int n = q.size();
+            for (int i = 0; i < n; i++)
+            {
+                Node *curr = q.front();
+                q.pop();
+                if (i == n - 1)
+                {
+                    ans.push_back(curr->data);
+                }
+                if (curr->left)
+                {
+                    q.push(curr->left);
+                }
+                if (curr->right)
+                {
+                    q.push(curr->right);
+                }
+            }
+        }
+        return ans;
+    }
+
+    vector<int> left_view()
+    {
+        vector<int> ans;
+        if (root == nullptr)
+        {
+            return ans;
+        }
+        queue<Node *> q;
+        q.push(root);
+        while (!q.empty())
+        {
+            int n = q.size();
+            for (int i = 0; i < n; i++)
+            {
+                Node *curr = q.front();
+                q.pop();
+                if (i == 0)
+                {
+                    ans.push_back(curr->data);
+                }
+                if (curr->left)
+                {
+                    q.push(curr->left);
+                }
+                if (curr->right)
+                {
+                    q.push(curr->right);
+                }
+            }
+        }
+        return ans;
+    }
+
+    vector<int> diagonal_traversal()
+    {
+        vector<int> ans;
+        if (root == nullptr)
+        {
+            return ans;
+        }
+        queue<Node *> q;
+        q.push(root);
+        while (!q.empty())
+        {
+            Node *curr = q.front();
+            q.pop();
+            while (curr)
+            {
+                ans.push_back(curr->data);
+                if (curr->left)
+                {
+                    q.push(curr->left);
+                }
+                curr = curr->right;
+            }
+        }
+        return ans;
+    }
+
+    pair<int, int> sum_of_longest_bloodline(Node *root)
+    {
+        if (root == nullptr)
+        {
+            return {0, 0};
+        }
+        pair<int, int> left = sum_of_longest_bloodline(root->left);
+        pair<int, int> right = sum_of_longest_bloodline(root->right);
+        if (left.first > right.first)
+        {
+            return {left.first + 1, left.second + root->data};
+        }
+        else if (right.first > left.first)
+        {
+            return {right.first + 1, right.second + root->data};
+        }
+        else if (left.second > right.second)
+        {
+            return {left.first + 1, left.second + root->data};
+        }
+        else
+        {
+            return {right.first + 1, right.second + root->data};
+        }
+    }
+
+    int sum_of_longest_bloodline()
+    {
+        return sum_of_longest_bloodline(root).second;
+    }
+
+    int lca(Node *root, int a, int b)
+    {
+        if (root == nullptr)
+        {
+            return -1;
+        }
+        if (root->data == a || root->data == b)
+        {
+            return root->data;
+        }
+        int left = lca(root->left, a, b);
+        int right = lca(root->right, a, b);
+        if (left != -1 && right != -1)
+        {
+            return root->data;
+        }
+        if (left == -1)
+        {
+            return right;
+        }
+        return left;
+    }
+
+    int lca(int a, int b)
+    {
+        return lca(root, a, b);
+    }
+
+    Node *find_node_and_map_parent(Node *root, unordered_map<Node *, Node *> &parent, int target)
+    {
+        if (root == nullptr)
+        {
+            return nullptr;
+        }
+        parent[root->left] = root;
+        parent[root->right] = root;
+        Node *left = find_node_and_map_parent(root->left, parent, target);
+        Node *right = find_node_and_map_parent(root->right, parent, target);
+        if (root->data == target)
+        {
+            return root;
+        }
+        if (left)
+        {
+            return left;
+        }
+        return right;
+    }
+
+    int minimum_time_to_burn(int target)
+    {
+        int ans = -1;
+        if (root == nullptr)
+        {
+            return ans;
+        }
+        unordered_map<Node *, Node *> parent;
+        Node *target_node = find_node_and_map_parent(root, parent, target);
+        unordered_map<Node *, bool> visited;
+        queue<Node *> q;
+        q.push(target_node);
+        visited[target_node] = true;
+        while (!q.empty())
+        {
+            ans++;
+            int n = q.size();
+            for (int i = 0; i < n; i++)
+            {
+                Node *curr = q.front();
+                q.pop();
+                if (curr->left && !visited[curr->left])
+                {
+                    q.push(curr->left);
+                    visited[curr->left] = true;
+                }
+                if (curr->right && !visited[curr->right])
+                {
+                    q.push(curr->right);
+                    visited[curr->right] = true;
+                }
+                if (parent[curr] && !visited[parent[curr]])
+                {
+                    q.push(parent[curr]);
+                    visited[parent[curr]] = true;
+                }
+            }
+        }
+        return ans;
+    }
+
+    vector<int> morris_traversal()
+    {
+        vector<int> ans;
+        Node *curr = this->root;
+        while (curr)
+        {
+            if (curr->left == nullptr)
+            {
+                ans.push_back(curr->data);
+                curr = curr->right;
+            }
+            else
+            {
+                Node *last = curr->left;
+                while (last->right && last->right != curr)
+                {
+                    last = last->right;
+                }
+                if (last->right == nullptr)
+                {
+                    last->right = curr;
+                    curr = curr->left;
+                }
+                else
+                {
+                    last->right = nullptr;
+                    ans.push_back(curr->data);
+                    curr = curr->right;
+                }
+            }
+        }
+        return ans;
+    }
+
+    void flatten_tree()
+    {
+        Node *curr = this->root;
+        while (curr)
+        {
+            if (curr->left == nullptr)
+            {
+                curr = curr->right;
+            }
+            else
+            {
+                Node *last = curr->left;
+                while (last->right)
+                {
+                    last = last->right;
+                }
+                last->right = curr->right;
+                curr->right = curr->left;
+                curr->left = nullptr;
+            }
+        }
+    }
 };
 
 int main()
@@ -316,7 +762,8 @@ int main()
         }
         cout << endl;
     }
-    for (auto i : tree.zig_zag())
+    tree.flatten_tree();
+    for (auto i : tree.level_order())
     {
         for (auto j : i)
         {

@@ -191,28 +191,101 @@ public:
         curr->next = nullptr;
         this->tail = curr;
     }
+
+    int length()
+    {
+        if (this->empty())
+        {
+            return 0;
+        }
+        int len = 0;
+        Node *curr = this->head;
+        while (curr)
+        {
+            len++;
+            curr = curr->next;
+        }
+        return len;
+    }
+
+    void delete_nth_node_from_end(int n)
+    {
+        Node *prev = nullptr;
+        Node *curr = head;
+        Node *fast = head;
+        int cnt = 0;
+        while (cnt < n)
+        {
+            fast = fast->next;
+            cnt++;
+        }
+        while (fast)
+        {
+            prev = curr;
+            curr = curr->next;
+            fast = fast->next;
+        }
+        if (prev == nullptr)
+        {
+            Node *temp = head;
+            head = head->next;
+            delete temp;
+            return;
+        }
+        prev->next = prev->next->next;
+        delete curr;
+        return;
+    }
+
+    void print_recursive(Node *head)
+    {
+        if (head == nullptr)
+        {
+            return;
+        }
+        cout << head->data << " ";
+        print_recursive(head->next);
+    }
+
+    void print_recursive()
+    {
+        if (empty())
+        {
+            cout << "LL Is Empty" << endl;
+            return;
+        }
+        print_recursive(this->head);
+        cout << endl;
+    }
+
+    Node *reverse_recursive(Node *head)
+    {
+        if (head == nullptr || head->next == nullptr)
+        {
+            return head;
+        }
+        Node *new_head = reverse_recursive(head->next);
+        head->next->next = head;
+        head->next = nullptr;
+        return new_head;
+    }
+
+    void reverse_recursive()
+    {
+        this->head = reverse_recursive(this->head);
+    }
 };
 
 int main()
 {
     LinkedList ll = LinkedList();
-    ll.print();
+    ll.insert(1);
     ll.insert(2);
+    ll.insert(3);
     ll.insert(4);
-    ll.print();
-    cout << ll.sum() << endl;
-    cout << ll.index_of(2) << endl;
-    cout << ll.index_of(4) << endl;
-    cout << ll.index_of(6) << endl;
-    ll.insert_at_first(3);
-    ll.print();
-    ll.insert_at_index(2, 10);
-    ll.print();
-    ll.reverse();
-    ll.print();
-    ll.delete_node_from_start();
-    ll.print();
-    ll.delete_node_from_end();
-    ll.print();
+    ll.insert(5);
+    ll.print_recursive();
+    ll.reverse_recursive();
+    ll.print_recursive();
     return 0;
 }

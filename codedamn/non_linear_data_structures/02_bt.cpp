@@ -742,34 +742,85 @@ public:
             }
         }
     }
+
+    Node *merge(Node *r1, Node *r2)
+    {
+        if (r1 == nullptr)
+        {
+            return r2;
+        }
+        if (r2 == nullptr)
+        {
+            return r1;
+        }
+        Node *ans = new Node(r1->data + r2->data);
+        ans->left = merge(r1->left, r2->left);
+        ans->right = merge(r1->right, r2->right);
+        return ans;
+    }
+
+    Node *merge(BinaryTree tree)
+    {
+        return merge(this->root, tree.root);
+    }
+
+    class Pair
+    {
+    public:
+        int min;
+        int max;
+        bool is_valid_bst;
+        int size;
+        Pair()
+        {
+            this->min = INT_MAX;
+            this->max = INT_MIN;
+            this->is_valid_bst = true;
+            this->size = 0;
+        }
+    };
+
+    Pair size_of_largest_bst(Node *root, int &ans)
+    {
+        if (root == nullptr)
+        {
+            return Pair();
+        }
+        Pair left = size_of_largest_bst(root->left, ans);
+        Pair right = size_of_largest_bst(root->right, ans);
+        Pair curr = Pair();
+        curr.min = min(root->data, left.min);
+        curr.max = max(root->data, right.max);
+        curr.size = left.size + right.size + 1;
+        bool is_curr_valid = left.max < root->data && right.min > root->data;
+        if (is_curr_valid && left.is_valid_bst && right.is_valid_bst)
+        {
+            curr.is_valid_bst = true;
+            ans = max(ans, curr.size);
+        }
+        else
+        {
+            curr.is_valid_bst = false;
+        }
+        return curr;
+    }
+
+    int size_of_largest_bst()
+    {
+        int ans = 0;
+        size_of_largest_bst(root, ans);
+        return ans;
+    }
 };
 
 int main()
 {
     BinaryTree tree = BinaryTree();
-    tree.root = new Node(1);
+    tree.root = new Node(5);
     tree.root->left = new Node(2);
-    tree.root->right = new Node(3);
-    tree.root->left->left = new Node(4);
-    tree.root->left->right = new Node(5);
-    tree.root->right->left = new Node(6);
-    tree.root->right->right = new Node(7);
-    for (auto i : tree.level_order())
-    {
-        for (auto j : i)
-        {
-            cout << j << " ";
-        }
-        cout << endl;
-    }
-    tree.flatten_tree();
-    for (auto i : tree.level_order())
-    {
-        for (auto j : i)
-        {
-            cout << j << " ";
-        }
-        cout << endl;
-    }
+    tree.root->right = new Node(4);
+    tree.root->left->left = new Node(1);
+    tree.root->left->right = new Node(3);
+    cout << tree.size_of_largest_bst() << endl;
     return 0;
 }

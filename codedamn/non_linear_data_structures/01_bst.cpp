@@ -71,52 +71,58 @@ public:
         return find(this->root, data);
     }
 
-    void preorder(Node *root)
+    void preorder(Node *root, vector<int> &ans)
     {
         if (root == nullptr)
         {
             return;
         }
-        cout << root->data << " ";
-        preorder(root->left);
-        preorder(root->right);
+        ans.push_back(root->data);
+        preorder(root->left, ans);
+        preorder(root->right, ans);
     }
 
-    void preorder()
+    vector<int> preorder()
     {
-        preorder(this->root);
+        vector<int> ans;
+        preorder(this->root, ans);
+        return ans;
     }
 
-    void inorder(Node *root)
-    {
-        if (root == nullptr)
-        {
-            return;
-        }
-        inorder(root->left);
-        cout << root->data << " ";
-        inorder(root->right);
-    }
-
-    void inorder()
-    {
-        inorder(this->root);
-    }
-
-    void postorder(Node *root)
+    void inorder(Node *root, vector<int> &ans)
     {
         if (root == nullptr)
         {
             return;
         }
-        postorder(root->left);
-        postorder(root->right);
-        cout << root->data << " ";
+        inorder(root->left, ans);
+        ans.push_back(root->data);
+        inorder(root->right, ans);
     }
 
-    void postorder()
+    vector<int> inorder()
     {
-        postorder(this->root);
+        vector<int> ans;
+        inorder(this->root, ans);
+        return ans;
+    }
+
+    void postorder(Node *root, vector<int> &ans)
+    {
+        if (root == nullptr)
+        {
+            return;
+        }
+        postorder(root->left, ans);
+        postorder(root->right, ans);
+        ans.push_back(root->data);
+    }
+
+    vector<int> postorder()
+    {
+        vector<int> ans;
+        postorder(this->root, ans);
+        return ans;
     }
 
     int depth(Node *root, int d, int data)
@@ -301,22 +307,146 @@ public:
         }
         return ans;
     }
+
+    vector<int> predecessor_and_successor(int key)
+    {
+        int pre = -1;
+        int succ = -1;
+        Node *ptr = this->root;
+        while (ptr)
+        {
+            if (ptr->data == key)
+            {
+                if (ptr->left)
+                {
+                    Node *curr = ptr->left;
+                    while (curr->left)
+                    {
+                        curr = curr->left;
+                    }
+                    pre = curr->data;
+                }
+                if (ptr->right)
+                {
+                    Node *curr = ptr->right;
+                    while (curr->right)
+                    {
+                        curr = curr->right;
+                    }
+                    succ = curr->data;
+                }
+                break;
+            }
+            else if (key < ptr->data)
+            {
+                succ = ptr->data;
+                ptr = ptr->left;
+            }
+            else
+            {
+                pre = ptr->data;
+                ptr = ptr->right;
+            }
+        }
+        return {pre, succ};
+    }
+
+    int kth_smallest(Node *root, int &k)
+    {
+        if (root == nullptr)
+        {
+            return -1;
+        }
+        int left = kth_smallest(root->left, k);
+        if (left != -1)
+        {
+            return left;
+        }
+        k--;
+        if (k == 0)
+        {
+            return root->data;
+        }
+        return kth_smallest(root->right, k);
+    }
+
+    int kth_smallest(int k)
+    {
+        return kth_smallest(this->root, k);
+    }
+
+    int lca(Node *root, int a, int b)
+    {
+        if (root == nullptr)
+        {
+            return -1;
+        }
+        if (root->data == a || root->data == b)
+        {
+            return root->data;
+        }
+        if (a < root->data && b < root->data)
+        {
+            return lca(root->left, a, b);
+        }
+        else if (a > root->data && b > root->data)
+        {
+            return lca(root->right, a, b);
+        }
+        else
+        {
+            return root->data;
+        }
+    }
+
+    int lca(int a, int b)
+    {
+        return lca(this->root, a, b);
+    }
+
+    Node *create_balanced_bst_from_sorted_array(vector<int> arr, int s, int e)
+    {
+        if (s > e)
+        {
+            return nullptr;
+        }
+        int mid = s + (e - s) / 2;
+        Node *root = new Node(arr[mid]);
+        root->left = create_balanced_bst_from_sorted_array(arr, s, mid - 1);
+        root->right = create_balanced_bst_from_sorted_array(arr, mid + 1, e);
+        return root;
+    }
+
+    void make_balanced()
+    {
+        cout << "BST Balanced Successfully..." << endl;
+        vector<int> arr = this->inorder();
+        this->root = create_balanced_bst_from_sorted_array(arr, 0, arr.size() - 1);
+    }
 };
 
 int main()
 {
     BinarySearchTree tree = BinarySearchTree();
-    int arr[] = {7, 3, 4, 8, 10, 2};
+    int arr[] = {4, 3, 2, 1};
     for (int i : arr)
     {
         tree.insert(i);
     }
-    vector<vector<int>> ans = tree.level_order();
-    for (vector<int> v : ans)
+    for (auto i : tree.level_order())
     {
-        for (int i : v)
+        for (auto j : i)
         {
-            cout << i << " ";
+            cout << j << " ";
+        }
+        cout << endl;
+    }
+    tree.make_balanced();
+    for (auto i : tree.level_order())
+    {
+        for (auto j : i)
+        {
+            cout << j << " ";
         }
         cout << endl;
     }

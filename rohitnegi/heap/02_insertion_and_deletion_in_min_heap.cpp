@@ -1,13 +1,13 @@
 #include <iostream>
 using namespace std;
 
-class MaxHeap
+class MinHeap
 {
 public:
     int *arr;
     int size;
     int total_size;
-    MaxHeap(int total_size)
+    MinHeap(int total_size)
     {
         this->total_size = total_size;
         this->size = 0;
@@ -107,7 +107,7 @@ public:
         return data;
     }
 
-    ~MaxHeap()
+    ~MinHeap()
     {
         delete[] this->arr;
     }
@@ -115,7 +115,7 @@ public:
 
 int main()
 {
-    MaxHeap heap(6);
+    MinHeap heap(6);
     heap.insert(4);
     heap.insert(14);
     heap.insert(11);

@@ -86,6 +86,26 @@ public:
         cout << endl;
     }
 
+    void dfs(Node *curr, unordered_map<Node *, bool> &visited)
+    {
+        cout << curr->data << " ";
+        visited[curr] = true;
+        for (Node *i : adjacency_list[curr])
+        {
+            if (visited[i] == false)
+            {
+                dfs(i, visited);
+            }
+        }
+    }
+
+    void dfs(Node *start)
+    {
+        unordered_map<Node *, bool> visited;
+        dfs(start, visited);
+        cout << endl;
+    }
+
     void print()
     {
         if (empty())
@@ -126,5 +146,6 @@ int main()
     graph.create_connection(f, g, DIRECTED);
     graph.print();
     graph.bfs(a);
+    graph.dfs(a);
     return 0;
 }

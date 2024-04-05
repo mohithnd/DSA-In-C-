@@ -1,27 +1,27 @@
 #include <iostream>
 #include <queue>
 #include <vector>
-#include <unordered_map>
+#include <map>
 using namespace std;
 
 class Node
 {
 public:
     char data;
-    unordered_map<char, Node *> children;
+    map<char, Node *> children;
     bool is_end_of_word;
     Node(char data)
     {
         this->data = data;
+        this->children = map<char, Node *>();
         this->is_end_of_word = false;
     }
 };
 
 class Trie
 {
-    Node *root;
-
 public:
+    Node *root;
     Trie()
     {
         this->root = new Node(' ');
@@ -32,7 +32,7 @@ public:
         Node *curr = this->root;
         for (char ch : word)
         {
-            if (curr->children[ch] == nullptr)
+            if (curr->children.find(ch) == curr->children.end())
             {
                 curr->children[ch] = new Node(ch);
             }
@@ -41,41 +41,77 @@ public:
         curr->is_end_of_word = true;
     }
 
-    void find_all_words(Node *curr, string word, vector<string> &ans)
+    Node *get_last_node(Node *root, string pref, int ind)
     {
-        word += curr->data;
-        if (curr->is_end_of_word)
+        if (ind == pref.size())
+        {
+            return root;
+        }
+        char ch = pref[ind];
+        Node *curr = root->children[ch];
+        if (curr == nullptr)
+        {
+            return nullptr;
+        }
+        return get_last_node(curr, pref, ind + 1);
+    }
+
+    void find_all_words(Node *root, string word, vector<string> &ans)
+    {
+        word += root->data;
+        if (root->is_end_of_word)
         {
             ans.push_back(word);
         }
-        for (auto i : curr->children)
+        for (auto i : root->children)
         {
             find_all_words(i.second, word, ans);
         }
     }
 
-    vector<string> auto_complete(string pref)
+    void auto_complete(string pref)
     {
         vector<string> ans;
-        Node *curr = this->root;
-        for (char ch : pref)
+        Node *last_node = get_last_node(this->root, pref, 0);
+        if (last_node == nullptr)
         {
-            if (curr->children[ch] == nullptr)
-            {
-                curr = nullptr;
-                break;
-            }
-            curr = curr->children[ch];
+            return;
         }
-        if (curr == nullptr)
-        {
-            return ans;
-        }
-        for (auto i : curr->children)
+        for (auto i : last_node->children)
         {
             find_all_words(i.second, pref, ans);
         }
-        return ans;
+        for (string s : ans)
+        {
+            cout << s << " ";
+        }
+        cout << endl;
+    }
+
+    void remove(Node *root, string word, int ind)
+    {
+        if (ind == word.size())
+        {
+            root->is_end_of_word = false;
+            return;
+        }
+        char ch = word[ind];
+        Node *curr = root->children[ch];
+        if (curr == nullptr)
+        {
+            return;
+        }
+        remove(curr, word, ind + 1);
+        if (curr->children.size() == 0 && curr->is_end_of_word == false)
+        {
+            root->children.erase(curr->data);
+            delete curr;
+        }
+    }
+
+    void remove(string word)
+    {
+        remove(this->root, word, 0);
     }
 
     void print()
@@ -83,7 +119,14 @@ public:
         queue<Node *> q;
         for (auto i : this->root->children)
         {
-            q.push(i.second);
+            if (i.second)
+            {
+                q.push(i.second);
+            }
+            else
+            {
+                this->root->children.erase(i.first);
+            }
         }
         while (!q.empty())
         {
@@ -92,42 +135,57 @@ public:
             {
                 Node *curr = q.front();
                 cout << curr->data << " ";
-                q.pop();
                 for (auto i : curr->children)
                 {
                     q.push(i.second);
                 }
+                q.pop();
             }
             cout << endl;
         }
         cout << endl;
     }
+
+    void destroy(Node *root)
+    {
+        if (root == nullptr)
+        {
+            return;
+        }
+        for (auto i : root->children)
+        {
+            if (i.second)
+            {
+                destroy(i.second);
+            }
+        }
+        delete root;
+    }
+
+    ~Trie()
+    {
+        destroy(this->root);
+    }
 };
 
 int main()
 {
-    Trie trie = Trie();
-    vector<string> words = {
-        "cat",
-        "car",
-        "carpet",
-        "carpool",
-        "carpooling",
-        "coding",
-        "coder",
-        "codecommunity",
-        "book",
-        "baggage",
-        "bag",
-    };
+    Trie t = Trie();
+    vector<string> words = {"car", "carpet", "carpool", "bag"};
     for (string s : words)
     {
-        trie.insert(s);
+        t.insert(s);
     }
-    trie.print();
-    for (string s : trie.auto_complete("car"))
-    {
-        cout << s << " ";
-    }
+    t.print();
+    t.auto_complete("ca");
+    t.auto_complete("ba");
+    cout << endl;
+    t.remove("carpet");
+    t.remove("car");
+    t.remove("bag");
+    t.auto_complete("ca");
+    t.auto_complete("ba");
+    cout << endl;
+    t.print();
     return 0;
 }

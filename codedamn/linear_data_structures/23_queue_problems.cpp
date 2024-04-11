@@ -93,6 +93,25 @@ queue<int> reverse_first_k_elements(queue<int> q, int k)
     return q;
 }
 
+queue<int> interleave_first_half_of_the_queue_with_second_Half(queue<int> q)
+{
+    queue<int> temp;
+    int n = q.size();
+    for (int i = 0; i < n / 2; i++)
+    {
+        temp.push(q.front());
+        q.pop();
+    }
+    for (int i = 0; i < n / 2; i++)
+    {
+        q.push(temp.front());
+        temp.pop();
+        q.push(q.front());
+        q.pop();
+    }
+    return q;
+}
+
 int main()
 {
     queue<int> q;
@@ -101,8 +120,9 @@ int main()
     q.push(3);
     q.push(4);
     q.push(5);
+    q.push(6);
     print(q);
-    q = reverse_first_k_elements(q, 3);
-    print(q);
+    queue<int> ans = interleave_first_half_of_the_queue_with_second_Half(q);
+    print(ans);
     return 0;
 }

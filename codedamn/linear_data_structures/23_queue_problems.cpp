@@ -69,13 +69,40 @@ vector<int> first_negative_integer_in_every_window_of_size_k(vector<int> arr, in
     return ans;
 }
 
+void reverse_first_k_elements_solve(queue<int> &q, int k)
+{
+    if (q.empty() || k <= 0)
+    {
+        return;
+    }
+    int data = q.front();
+    q.pop();
+    reverse_first_k_elements_solve(q, k - 1);
+    q.push(data);
+    return;
+}
+
+queue<int> reverse_first_k_elements(queue<int> q, int k)
+{
+    reverse_first_k_elements_solve(q, k);
+    for (int i = 0; i < q.size() - k; i++)
+    {
+        q.push(q.front());
+        q.pop();
+    }
+    return q;
+}
+
 int main()
 {
-    vector<int> arr = {-8, 2, 3, -6, 10};
-    vector<int> ans = first_negative_integer_in_every_window_of_size_k(arr, 2);
-    for (int i : ans)
-    {
-        cout << i << " ";
-    }
+    queue<int> q;
+    q.push(1);
+    q.push(2);
+    q.push(3);
+    q.push(4);
+    q.push(5);
+    print(q);
+    q = reverse_first_k_elements(q, 3);
+    print(q);
     return 0;
 }

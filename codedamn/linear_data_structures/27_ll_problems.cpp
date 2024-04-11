@@ -84,14 +84,35 @@ bool is_cycle(Node *head)
     return false;
 }
 
+int middle_of_ll(Node *head)
+{
+    if (head == nullptr)
+    {
+        return 0;
+    }
+    if (head->next == nullptr)
+    {
+        return head->data;
+    }
+    Node *slow = head;
+    Node *fast = head;
+    while (fast && fast->next)
+    {
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+    return slow->data;
+}
+
 int main()
 {
     Node *head = new Node(1);
     head->next = new Node(2);
     head->next->next = new Node(3);
     head->next->next->next = new Node(4);
-    cout << is_cycle(head) << endl;
-    head->next->next->next->next = head->next->next;
-    cout << is_cycle(head) << endl;
+    head->next->next->next->next = new Node(5);
+    cout << middle_of_ll(head) << endl;
+    head->next->next->next->next->next = new Node(6);
+    cout << middle_of_ll(head) << endl;
     return 0;
 }

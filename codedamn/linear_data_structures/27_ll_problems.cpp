@@ -1,4 +1,5 @@
 #include <iostream>
+#include <unordered_set>
 using namespace std;
 
 class Node
@@ -104,15 +105,60 @@ int middle_of_ll(Node *head)
     return slow->data;
 }
 
+void remove_loop(Node *head)
+{
+    if (head == nullptr || head->next == nullptr)
+    {
+        return;
+    }
+    unordered_set<Node *> st;
+    Node *curr = head;
+    st.insert(curr);
+    while (curr)
+    {
+        if (st.find(curr->next) != st.end())
+        {
+            curr->next = nullptr;
+            break;
+        }
+        curr = curr->next;
+        st.insert(curr);
+    }
+}
+
+Node *remove_duplicates_from_sorted(Node *head)
+{
+    if (head == nullptr || head->next == nullptr)
+    {
+        return head;
+    }
+    Node *curr = head;
+    while (curr && curr->next)
+    {
+        if (curr->data == curr->next->data)
+        {
+            Node *temp = curr->next;
+            curr->next = temp->next;
+            delete temp;
+        }
+        else
+        {
+            curr = curr->next;
+        }
+    }
+    return head;
+}
+
 int main()
 {
     Node *head = new Node(1);
-    head->next = new Node(2);
-    head->next->next = new Node(3);
-    head->next->next->next = new Node(4);
-    head->next->next->next->next = new Node(5);
-    cout << middle_of_ll(head) << endl;
-    head->next->next->next->next->next = new Node(6);
-    cout << middle_of_ll(head) << endl;
+    head->next = new Node(1);
+    head->next->next = new Node(2);
+    head->next->next->next = new Node(3);
+    head->next->next->next->next = new Node(3);
+    head->next->next->next->next->next = new Node(3);
+    print(head);
+    head = remove_duplicates_from_sorted(head);
+    print(head);
     return 0;
 }

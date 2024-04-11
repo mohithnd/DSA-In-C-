@@ -64,18 +64,34 @@ Node *reverse_list_in_k_groups(Node *head, int k)
     return prev;
 }
 
+bool is_cycle(Node *head)
+{
+    if (head == nullptr || head->next == nullptr)
+    {
+        return false;
+    }
+    Node *slow = head;
+    Node *fast = head;
+    while (fast && fast->next)
+    {
+        slow = slow->next;
+        fast = fast->next->next;
+        if (slow == fast)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 int main()
 {
     Node *head = new Node(1);
     head->next = new Node(2);
     head->next->next = new Node(3);
     head->next->next->next = new Node(4);
-    head->next->next->next->next = new Node(5);
-    head->next->next->next->next->next = new Node(6);
-    head->next->next->next->next->next->next = new Node(7);
-    head->next->next->next->next->next->next->next = new Node(8);
-    print(head);
-    head = reverse_list_in_k_groups(head, 3);
-    print(head);
+    cout << is_cycle(head) << endl;
+    head->next->next->next->next = head->next->next;
+    cout << is_cycle(head) << endl;
     return 0;
 }
